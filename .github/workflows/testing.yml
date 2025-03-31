@@ -3,7 +3,7 @@
 # For more information see:
 # https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: CheckRuns
+name: Python package
 
 on:
   push:
@@ -11,9 +11,6 @@ on:
   pull_request:
     branches: ["main"]
 
-permissions:
-  contents: read
-  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,16 +20,17 @@ jobs:
         python-version: ["3.9", "3.10"]
 
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
-	  pip install -r .github/workflows/requirements/testing.txt --require-hashes
+          pip install -r .github/workflows/requirements/testing.txt --require-hashes
+          python -m pip install flake8 pytest
           pip install -r .github/workflows/requirements/runtime.txt --require-hashes
           pip install -e .
 
